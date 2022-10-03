@@ -1,26 +1,33 @@
-import asyncio
-from connection import Connection
+import time
 
-# async def select_data():
-#     conn = Connection.connect()
-#     record_data = await conn.fetchrow("""SELECT * FROM tb_users """)
-#     await Connection.fetchall(record_data())
-#     print(record_data)
+import asyncio
+from src.connection import Connection
+from dataExtract1 import dataExtract_base
+
+import os
+
+start_time = time.time()
+
+loop = asyncio.new_event_loop()
 
 
 def main():
-    asyncio.run(Connection.connect())
-    # s = Connection()
-    # print(s)
-    # s = asyncio.run(Connection.connect())
-    # print(s)
-    # d = asyncio.run(Connection.connect())
-    # print(d)
-    s = Connection()
-    print(s)
-    t = Connection()
-    print(t)
+    query = "SELECT * FROM tb_users LIMIT 5"
 
+    r = loop.run_until_complete(Connection.connect())
+
+    s = loop.run_until_complete(dataExtract_base.extract(
+                                connection= r, 
+                                query= query
+                                ) )
+    # t = loop.run_until_complete(dataExtract_com.extract(
+    #                             connection= r, 
+    #                             query= query
+    #                             ))
+    print(s)
+    # print(t)
+
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 if __name__ == '__main__':
     main()
